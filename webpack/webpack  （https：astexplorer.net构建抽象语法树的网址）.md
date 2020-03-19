@@ -43,7 +43,7 @@
 
 #### 用commonJS导入或者导出，为什么用es6 module依然可以导入或者导出，两者为什么可以配合使用？
 > ##### es6 export -- commonJs require()： 
->> ```
+>> ```js
 >> //a.js
 >> export const a = 'a'
 >> export const b = 'b'
@@ -54,7 +54,7 @@
 >> ```
 
 > ##### commonJS export -- es6 import： 
->> ```
+>> ```js
 >> module.exports = {
 >>  a:'a',
 >>  b:'b',
@@ -74,7 +74,7 @@
 #### 配置文件中通过CommonJS模块导出一个对象
 
 
-```
+```js
 //webpack.config.js 
 
 module.exports = {
@@ -118,7 +118,7 @@ module.exports = {
 
 #### `loader-utils`这个第三方库，可以解析`options`中配置的对象
 
-```
+```js
 module.exports = {
     module: {
         rules: [
@@ -185,10 +185,8 @@ module.exports = {
 > >
 > >```js
 > >module.exports = env => {
-> >return {
-> >   
-> >}
-> >}
+> >    return {}
+> >   }
 > >```
 > >
 > >
@@ -206,7 +204,7 @@ module.exports = {
 4. >#### webpack-dev-server: 开发服务器，在  *开发阶段*   开启的一个服务器
    >>##### 既不是loader，也不是plugin，是webpack官方单独出的一个库
    >>
-   >>##### 这个库依然是按照`webpack.config.js`的配置来开启服务，自带watch功能，并会自动刷新页面 
+   >>##### 这个库依然是按照`webpack.config.js`的配置来开启服务，自带watch功能，并会自动刷新页面
    >>
    >>##### 使用：1.安装`yarn add webpack-dev-server`   2. 启动：`webpack-dev-server`
    >>
@@ -316,7 +314,7 @@ module.exports = {
 
 ## 其他细节配置
 
-- #### context：模块路径上下文
+- #### context：入口模块路径上下文
 
 - #### output
 
