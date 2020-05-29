@@ -1,4 +1,10 @@
-## 浏览器端模块化
+## 浏览器端模块化 --- webpack编译打包过程运行在node.js端
+
+#### 路径方面的问题
+
+##### 1.==如果是`require(./)`这个`./`表示当前文件下面==
+
+##### 2.==如果是`./`那么这个表示node运行时所在的目录==
 
 #### 浏览器的模块化 --- es6module 的问题：
 > ##### 1.效率问题：模块惊喜导致引入了过多的js文件，带来了过多的请求，降低了页面的访问效率
@@ -8,6 +14,7 @@
 > ##### 3.工具问题：浏览器不支持npm下载的第三方包
 
 #### 为什么在node端支持npm等一系列上述问题？
+
 > ##### 因为浏览器请求页面需要请求并下载资源到用户的浏览器上。而node可以直接读取本地文件`fs.readFile()`
 
 #### 根本原因： 在浏览器端，开发时态（devtime）和运行时态（runtime）的侧重点不一样
@@ -42,6 +49,7 @@
 ## 模块化兼容
 
 #### 用commonJS导入或者导出，为什么用es6 module依然可以导入或者导出，两者为什么可以配合使用？
+
 > ##### es6 export -- commonJs require()： 
 >> ```js
 >> //a.js
@@ -147,17 +155,21 @@ module.exports = {
 
 
 ```js
-//plugin.js
+//plugin.js          在这个函数中用node.js来实现文件操作
 module.exports = class Plugin {
     apply(compiler) { /*apply是钩子函数*/
         console.log('webpack运行了')
+        //一般在这里注册事件(钩子函数)
+        compiler.hooks.done/*(事件名称)*/.tap/*事件类型*/("name"/*随便填写一般用于调试*/, function (compilation) {
+            console.log('编译完成了')
+        })
     }
 }
 
 //index.js
 const Plugin = require('./plugin.js')
 module.exports = {
-    plugin: [
+    plugins: [
         new Plugin()
     ]
 }
@@ -199,9 +211,10 @@ module.exports = {
 
 2. #### html-webpack-plugin: 自动生成页面（html文件），并且html文件会自动引入css，js文件
 
-3. #### copy-webpack-plugin: 将某一个文件夹下面的文件复制到另一个文件夹下，一般html模板会引入一个img图片，因为在你打包的时候并没有用require（）引入这个图片路径，所以在编译的时候这个图片就不会配打包，这时候就需要这个插件，来将这个图片，复制到你想复制到的路径下
+3. #### copy-webpack-plugin: 将某一个文件夹下面的文件复制到另一个文件夹下，一般html模板会引入一个img图片，因为在你打包的时候并没有用require（）引入这个图片路径，所以在编译的时候这个图片就不会被打包，这时候就需要这个插件，来将这个图片，复制到你想复制到的路径下
 
-4. >#### webpack-dev-server: 开发服务器，在  *开发阶段*   开启的一个服务器
+4. #### webpack-dev-server: 开发服务器，在  *开发阶段*   开启的一个服务器
+   >
    >>##### 既不是loader，也不是plugin，是webpack官方单独出的一个库
    >>
    >>##### 这个库依然是按照`webpack.config.js`的配置来开启服务，自带watch功能，并会自动刷新页面
@@ -209,34 +222,36 @@ module.exports = {
    >>##### 使用：1.安装`yarn add webpack-dev-server`   2. 启动：`webpack-dev-server`
    >>
    >>##### 这个命令并不会打包生成文件到output，它会保存资源列表（assets）并开启一个服务器，可以直接访问localhost来访问页面，所以只有在  *开发阶段*   使用，真正  *生产阶段*   还是要用webpack来打包文件
-   > #### 配置
-   > > ```js
-   > > module.exports = {
-   > >     devServer: {
-   > >         port: 8899 //服务器监听的端口号，
-   > >         open: true //开启之后自动打开浏览器窗口并访问URL地址，
-   > >         index: 'index.html' //默认访问的html页面地址,
-   > >         stats: {} //控制命令行窗口的输出信息
-   > >         proxy: {  //代理请求地址
-   > >         '/api' : {
-   > >         target: 'https://xxx.xxx.com',
-   > >         changeOrigin: true /*将请求的请求头的host和origin也一并变为转发后的URL的host和origin*/
-   > >    			 }
-   > >    		} 
-   > >     }
-   > > }
-   > > ```
+   >#### 配置
+   >
+   >> ```js
+   >> module.exports = {
+   >>  devServer: {
+   >>      port: 8899 //服务器监听的端口号，
+   >>      open: true //开启之后自动打开浏览器窗口并访问URL地址，
+   >>      index: 'index.html' //默认访问的html页面地址,
+   >>      stats: {} //控制命令行窗口的输出信息
+   >>      proxy: {  //代理请求地址
+   >>          '/api' : {
+   >>          target: 'https://xxx.xxx.com',
+   >>          changeOrigin: true /*将请求的请求头的host和origin也一并变为转发后的URL的host和origin*/
+   >>                  }
+   >> 		} 
+   >>  }
+   >> }
+   >> ```
+
 
 5. #### file-loader: 当导入文件的时候，可以生成一个文件放入output目录中去，并导出一个文件路径
 
 6. #### url-loader: 将一个引入的文件转换，并导出一个base64格式的文件
 
-7. > #### 解决file-loader和url-loader遇到的路径问题：
+7.  #### 解决file-loader和url-loader遇到的路径问题：
    > >```js
    > >module.exports = {
-   > >    output: {
-   > >       publicPath: '/'   //一般配置成"/"，生成的js文件相当于，配置一个字符串给 __webpack_require__.p，一般的插件和loader会将这个字符串，写在路径的前面做拼接 
-   > >    }
+   > >        output: {
+   > >           publicPath: '/'   //一般配置成"/"，生成的js文件相当于，配置一个字符串给 __webpack_require__.p，一般的插件和loader会将这个字符串，写在路径的前面做拼接 
+   > >        }
    > >}
    > >```
 
