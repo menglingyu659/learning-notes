@@ -332,5 +332,52 @@ export default class AntdFormPage extends Component {
 
 #### 掌握ref
 
+#### HOC
+
+- ##### 装饰器：修饰的必须是一个`class组件`，不能是`函数组件`
+
+  - ##### 修饰顺序从下往上
+
+- ##### 高阶组件注意事项
+
+  - ##### 不要再`render`方法中使用
+
+#### 弹窗组件实现
+
+- ##### 传送门(`createPortal`)：react v16之后出现的portal可以实现内容传送功能。将组件加到指定中（如加入`<body></body>中`）
+
+  - ##### 第一个参数为内容，第二个参数为要去的地方
+
+  ```jsx
+  // Diallog.js
+  import React, { Component } from "react";
+  import { createPortal } from "react-dom";
+  export default class Dialog extends Component {
+    constructor(props) {
+      super(props);
+      const doc = window.document;
+      this.node = doc.createElement("div");
+      doc.body.appendChild(this.node);
+    }
+    componentWillUnmount() {
+      window.document.body.removeChild(this.node);
+    }
+    render() {
+      const { hideDialog } = this.props;
+      return createPortal(
+        <div className="dialog">
+          {this.props.children}
+          {typeof hideDialog === "function" && <button onClick={hideDialog}>关掉弹窗</button>}
+        </div>,
+        this.node
+      );
+    }
+  }
+  ```
+
+### Redux
+
+#### 实现redux
+
 
 
