@@ -10,11 +10,11 @@
 
 #### 资源
 
-- #### [create-react-app](https://www.html.cn/create-react-app/docs/getting-started/)
+##### [create-react-app](https://www.html.cn/create-react-app/docs/getting-started/)
 
-- #### [HOC](https://reactjs.org/docs/higher-order-components.html)
+##### [HOC](https://reactjs.org/docs/higher-order-components.html)
 
-- #### [ant-design](https://ant.design/docs/react/use-with-create-react-app-cn)
+##### [ant-design](https://ant.design/docs/react/use-with-create-react-app-cn)
 
 #### 组件化优点
 
@@ -36,7 +36,7 @@
 
 - ##### 函数组件
 
-  1. ##### 获取一个或多个context：useContext(context)
+  1. ##### 获取一个或多个context：useContext(Context)
 
 ```jsx
 //Context.jsx
@@ -377,7 +377,524 @@ export default class AntdFormPage extends Component {
 
 ### Redux
 
+#### 使用redux
+
+##### 普通使用redux
+
+```jsx
+import React, { Component } from "react";
+import store from "../store/";
+export default class ReduxPage extends Component {
+  componentDidMount() {
+    store.subscribe(() => {
+      this.forceUpdate();
+    });
+  }
+  add = () => {
+    store.dispatch({ type: "ADD" });
+  };
+  minus = () => {
+    store.dispatch({ type: "MINUS" });
+  };
+  render() {
+    console.log("store", store); //sy-log
+    return (
+      <div>
+        <h3>ReduxPage</h3>
+        <p>{store.getState()}</p>
+        <button onClick={this.add}>add</button>
+        <button onClick={this.minus}>minus</button>
+      </div>
+    );
+  }
+}
+```
+
+##### 加入中间件使用redux
+
+`redux-thunk`：实现异步操作(==dispatch的区别，平常传入`{}`，使用`redux-thunk`可传入`function(){}`实现异步==)
+
+`redux-logger`：打印redux日志
+
+```jsx
+import { createStore, applyMiddleware } from "redux";
+import logger from "redux-logger";
+import thunk from "redux-thunk";
+import counterReducer from "./counterReducer";
+const store = createStore(counterReducer, applyMiddleware(thunk, logger));
+```
+
+```jsx
+asyAdd = () => {
+  store.dispatch((dispatch, getState) => {
+    setTimeout(() => {
+      // console.log("now ", getState()); //sy-log   //获取当前redux的state
+      dispatch({ type: "ADD", payload: 1 });
+    }, 1000);
+  });
+};
+```
+
 #### 实现redux
+
+```jsx
+export default function createStore(reducer, enhancer) {
+  if (enhancer) {
+    return enhancer(createStore)(reducer);
+  }
+  let currentState;
+  let currentListeners = [];
+  function getState() {
+    return currentState;
+  }
+  function dispatch(action) {
+    currentState = reducer(currentState, action);
+    currentListeners.forEach((listener) => listener());
+    return action;
+  }
+  function subscribe(listener) {
+    currentListeners.push(listener);
+    return () => {
+      currentListeners = [];
+    };
+  }
+  dispatch({ type: "KKBREDUX/OOOO" });
+  return {
+    getState,
+    dispatch,
+    subscribe,
+  };
+}
+```
+
+#### 实现中间件 —— `applyMiddleware`
+
+```jsx
+export function applyMiddleware(...middleWares) {
+  return (createStore) => (reducer) => {
+    let store = createStore(reducer);
+    let dispatch = store.dispatch;
+    store = {
+      ...store,
+      dispatch: (action) => dispatch(action),
+    };
+    middleWares = middleWares.map((fn) => fn(store));
+    dispatch = compose(...middleWares)(dispatch);
+    return {
+      ...store,
+      dispatch,
+    };
+  };
+}
+
+function compose(...funs) {
+  if (funs.length === 0) {
+    return (args) => args;
+  }
+  return funs.reduce((previous, current) => (...arg) => {
+    return previous(current(...arg));
+  });
+}
+```
+
+##### 实现`redux-logger` 、`redux-thunk`、`redux-promise`
+
+```jsx
+const logger = ({ getState }) => {
+  return (next) => (action) => {
+    if (typeof action === "function") {
+      return next(action);
+    }
+    console.group(`action ${action.type} @ ${new Date().toLocaleString()}`);
+    console.log(`%c prev state `, "color: gray", getState());
+    console.log(`%c action    `, "color: aqua", action);
+    const returnAction = next(action);
+    console.log(`%c next state `, "color: yellowgreen", getState());
+    console.groupEnd();
+    return returnAction;
+  };
+};
+
+const thunk = ({ dispatch, getState }) => {
+  return (next) => (action) => {
+    if (typeof action === "function") {
+      return action(dispatch, getState);
+    }
+    return next(action);
+  };
+};
+
+import isPromise from "is-promise";  //判断是否是promise
+import { isFSA } from "flux-standard-action";  //判断是否是{type:xxx}的格式
+
+const reduxPromise = ({dispatch}) => {
+  return (next) => (action) => {
+    if (action instanceof Promise) {
+      return action.then((act) => {
+        return dispatch(act);
+      });
+    }
+    return next(action);
+  };
+};
+```
+
+#### `combineReducers`：聚合reducer
+
+##### 使用
+
+```jsx
+import {combineReducers, createStore, applyMiddleware} from 'redux'
+function reducer1(state = 0, { type, payload = 1 }) {
+  switch (type) {
+    case "add":
+      return state + payload;
+    case "minus":
+      return state - payload;
+    default:
+      return state;
+  }
+}
+const store = createStore(combineReducers({home: reducer1}), applyMiddleware(thunk, logger));
+
+//页面中取值用
+store.getState().home
+```
+
+##### 实现
+
+```jsx
+export function combineReducers(reducers = {}) {
+  return (state = {}, action) => {
+    for (const prop in reducers) {
+      state[prop] = reducers[prop](state[prop], action);
+    }
+    return state;
+  };
+}
+```
+
+### `React-Redux`
+
+#### 使用`react-redux`
+
+#### 资源
+
+##### [react-redux API](https://www.redux.org.cn/docs/react-redux/api.html)
+
+##### [react-redux](https://github.com/reduxjs/react-redux)
+
+```jsx
+//Provider  将store传递给子组件
+import store from "./store";
+import { Provider } from "react-redux";
+ReactDOM.render(
+  <Provider store={store}>
+      <App />
+  </Provider>,
+  document.getElementById("root")
+);
+
+//connect 连接store和子组件的props属性
+import React, { Component } from "react";
+import { connect } from "react-redux";
+class ReactReduxPage extends Component {
+  render() {
+    const { num, add, minus, asyAdd } = this.props;
+    return (
+      <div>
+        <h1>ReactReduxPage</h1>
+        <p>{num}</p>
+        <button onClick={add}>add</button>
+        <button onClick={minus}>minus</button>
+      </div>
+    );
+  }
+}
+//------------------------------------------------------------------mapStateToProps(Function)
+const mapStateToProps = (state) => {     
+  return {
+    num: state,
+  };
+};
+//------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------mapDispatchToProps(Function or Object)
+const mapDispatchToProps = { 		    	//写法1
+  add: () => ({ type: "add" }),
+  minus: () => ({ type: "minus" }),
+};
+const mapDispatchToProps = (dispatch) => {  //写法2
+  return {
+    add: () => dispatch({ type: "add" }),
+    minus: () => dispatch({ type: "minus" }),
+  };
+};
+import { bindActionCreators } from "redux"; //写法3
+const mapDispatchToProps = (dispatch) => {
+  let creators = {
+    add: () => ({ type: "add" }),
+    minus: () => ({ type: "minus" }),
+  };
+  creators = bindActionCreators(creators, dispatch);
+  return { ...creators };
+};
+//--------------------------------------------------------------------------
+
+export default connect(
+  mapStateToProps, //状态映射 mapStateToProps
+  mapDispatchToProps //派发事件映射
+)(ReactReduxPage);
+```
+
+#### `react-redux`相关的`hook API`
+
+##### `useSelector`：获取store state
+
+##### `useDispatch`：获取store dispatch
+
+- ##### 两种`Hooks`的使用
+
+  ```jsx
+  import React, { useCallback } from "react";
+  import { useSelector, useDispatch } from "react-redux";
+  
+  export default function test(props) {
+    const store = useSelector((state) => ({
+      count: state.count,
+    }));
+    const dispatch = useDispatch();
+    const add = useCallback(() => {
+      dispatch({ type: "add" });
+    });
+    return (
+      <div>
+        <h3>ReactReduxHookPage</h3>
+        <p>{store.count}</p>
+        <button onClick={add}>add</button>
+      </div>
+    );
+  }
+  ```
+
+#### 实现`react-redux`
+
+##### API：
+
+- `<Provider></Provider>`
+- `connect`
+- Hooks：`useSelector` 和 `useDispatch`
+
+```jsx
+import React, { useContext, useReducer, useEffect } from "react";
+const Context = React.createContext();
+
+const bindActionCreators = (creaters = {}, dispatch) => {
+  const returnCreaters = {};
+  for (const prop in creaters) {
+    returnCreaters[prop] = () => dispatch(creaters[prop]());
+  }
+  return returnCreaters;
+};
+
+export const Provider = ({ store, children }) => {
+  return <Context.Provider value={store}>{children}</Context.Provider>;
+};
+
+export const connect = (mapStateToProps = () => ({}), mapDispatchToProps) => (Component) => (props) => {
+  const { getState, dispatch, subscribe } = useContext(Context);
+  const [, setUpdate] = useReducer((x) => x + 1, 0);
+  const mutation = () => {
+    if (mapDispatchToProps === undefined) return { dispatch };
+    if (typeof mapDispatchToProps === "function") {
+      return mapDispatchToProps(dispatch);
+    } else {
+      return bindActionCreators(mapDispatchToProps, dispatch);
+    }
+  };
+  useEffect(() => {
+    const unsubscribe = subscribe(() => setUpdate());
+    return () => unsubscribe();
+  }, [subscribe]);
+  const combine = { ...mapStateToProps(getState()), ...mutation() };
+  return <Component {...props} {...combine}></Component>;
+};
+
+export const useSelector = (selector) => {
+  const { getState, subscribe } = useContext(Context);
+  const [, setUpdate] = useReducer((x) => x + 1, 0);
+  console.log("useDispatch", "dispatch");
+
+  useEffect(() => {
+    const unsubscribe = subscribe(() => setUpdate());
+    return () => unsubscribe();
+  }, [subscribe]);
+  return selector(getState());
+};
+
+export const useDispatch = () => {
+  const { dispatch } = useContext(Context);
+  return dispatch;
+};
+```
+
+### Hooks API
+
+#### useReducer
+
+```jsx
+import React, { useReducer } from "react";
+
+function reducer(state = 0, action) {
+  switch (action.type) {
+    case "add":
+      return state + 1;
+    case "minus":
+      return state - 1;
+    default:
+      return state;
+  }
+}
+
+function init(initVal) { //接受的参数为useReducer的第二个参数
+  return initVal + 51;
+}
+
+export default function useReducerTest() {
+  const [state, dispatch] = useReducer(reducer, 5, init); //第一个参数是reducer，第二个参数是初始值，第三个参数若存在return值会代替第二个参数作为初始值
+  return (
+    <div>
+      <p>{state}</p>
+      <button
+        onClick={() => {
+          dispatch({ type: "add" });
+        }}
+      >
+        add
+      </button>
+      <button
+        onClick={() => {
+          dispatch({ type: "minus" });
+        }}
+      >
+        minus
+      </button>
+    </div>
+  );
+}
+```
+
+### `React-Router`
+
+### [react-router 这个英文文档很好](https://reacttraining.com/react-router/web/guides/quick-start)
+
+#### 简介
+
+- #### react-router包含3个库，react-router、react-router-dom和react-router-native。react-router提供最基本的路由功能，实际使⽤的时候我们不会直接安装react-router，⽽是根据应⽤运⾏的环境选择安装react-router-dom（在浏览器中使⽤）或react-router-native（在rn中使⽤）。react-router-dom和react-router-native都依赖react--router，所以在安装时，react-router也会⾃动安装，创建web应⽤，使用
+
+
+
+#### 安装
+
+```shell
+yarn add react-router-dom
+```
+
+
+
+```jsx
+<Router>
+    <Route exact strict></Route> {/* exact strict共同使用代表不可匹配路径为"/login/"只可匹配"/login"   */}
+    <Route sensitive></Route> {/* sensitive代表匹配路径严格按照大小写   */}
+</Router>
+```
+
+
+
+#### 基本使用
+
+- ##### react-router中奉⾏⼀切皆组件的思想，路由器-**Router**、链接-**Link**、路由-**Route**、独占-**Switch**、重定向-**Redirect**都以组件形式存在
+
+
+
+#### **Route**渲染内容的三种⽅式
+
+- ##### Route渲染优先级：children>component>render。
+
+- ##### 三者能接收到同样的[route props]，包括`match`、 `location` 和 `history`，但是当不匹配的时候，==`children`的`match`为null==。
+
+- ##### 这三种⽅式互斥，你只能⽤⼀种，它们的不同之处可以参考下⽂：
+
+  - >**component: component**
+  >
+    >##### 只在当location匹配的时候渲染。
+    >
+    >```jsx
+    >{/* 渲染component的时候会调⽤React.createElement，如果使⽤下⾯这种匿名函数的形式，每次都会⽣成⼀个新的匿名的函数，
+    >导致⽣成的组件的type总是不相同，这个时候会产⽣重复的卸载和挂载 */}
+    ><Route component={() => <TestComponent count= {count} />} />
+    ><Route component={TestComponent} />
+    >//内部大概原理
+    >function Route(props) {
+    >    return <props.component></props.component>
+    >}
+    >```
+  
+  - >**render**：**func**
+    >
+    >##### 当你⽤render的时候，内部仅仅是将这个函数调⽤的返回值渲染到页面。但是它和component⼀样，能访问到所有的[route props]。
+    >
+    >```jsx
+    ><Route render={() => <TestComponent count= {count} />} />
+    >//内部大概原理
+    >function Route(props) {
+    >    //每次type值，都是传进来函数的返回值组件（TestComponent）的type，所以每次type都相同不会发生重复卸载和挂载
+    >    return {props.render()}
+    >}
+    >```
+    >
+    >
+  
+  - > **children**：**func**
+    >
+    > ##### 有时候，不管location是否匹配，你都需要渲染⼀些内容，这时候你可以⽤children。除了不管location是否匹配都会被渲染之外，其它⼯作⽅法与render完全⼀样
+  
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
