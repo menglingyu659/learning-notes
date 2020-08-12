@@ -300,7 +300,7 @@ export default class AntdFormPage extends Component {
     export default class MyRCFieldForm extends Component {
       formRef = React.createRef();
       componentDidMount() {
-        console.log("form", this.formRef.current); //sy￾log
+        console.log("form", this.formRef.current); //sy-log
         this.formRef.current.setFieldsValue({ username: "default" });
       }
       onFinish = (val) => {

@@ -32,7 +32,11 @@
 
 #### `provide/inject`
 
+<<<<<<< HEAD
 #### `Vue.extend`
+=======
+#### `extend`
+>>>>>>> 0a6171dd90e389d8d01ab9ff20359ec6b9992740
 
 #### `mixins`
 
@@ -85,6 +89,7 @@ export function create(Component, props) {
 }
 ```
 
+<<<<<<< HEAD
 ### `Extend`方式：
 
 ```jsx
@@ -98,6 +103,8 @@ export function create(Component, props) {
 
 
 
+=======
+>>>>>>> 0a6171dd90e389d8d01ab9ff20359ec6b9992740
 ### 解决问题
 
 #### 设计组件时（`Form组件`）访问不受组件嵌套限制的父组件属性

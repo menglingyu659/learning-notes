@@ -278,8 +278,9 @@ const a = require('./a')
 ##### node中有一个全局属性process.env可以获取所有系统环境变量
 
 > ```js
+> //index.js
 > //通过设置系统环境变量名字为NODE_ENV，值为development就可以将这个属性添加到process.env中
-> console.log(process.env.NODE_ENV)//developmentconsole.log()//development
+> console.log(process.env.NODE_ENV)//development   console.log()  development
 > ```
 
 

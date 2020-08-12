@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function Node(value) {
+        this.value = value;
+        this.next = null;
+      }
+
+      const a = new Node("a");
+      const b = new Node("b");
+      const c = new Node("c");
+      const d = new Node("d");
+
+      a.next = b;
+      b.next = c;
+      c.next = d;
+      d.next = a;
+
+      // /**
+      //  * 遍历
+      //  * @param root
+      //  */
+      // function forEach(root) {
+      //   while (root) {
+      //     console.log(root.value);
+      //     root = root.next;
+      //   }
+      // }
+
+      // function forEach(root) {
+      //   if (!root) return;
+      //   console.log(root.value, "fenzhi");
+      //   forEach(root.next);
+      // }
+      // // forEach(a);
+
+      // /**
+      //  * 获取链表长度
+      //  *@param root
+      //  */
+      // function length(root) {
+      //   let count = 0;
+      //   while (root) {
+      //     count++;
+      //     root = root.next;
+      //   }
+      //   return count;
+      // }
+      // function length1(root) {
+      //   if (!root) return 0;
+      //   return 1 + length(root.next);
+      // }
+
+      // console.log(length1(a), "length");
+
+      // /**
+      //  * 通过下标获取值
+      //  * @param {*} root
+      //  * @param {*} index
+      //  */
+      // function getValue(root, index) {
+      //   let count = 0;
+      //   while (root) {
+      //     if (count === index) return root.value;
+      //     root = root.next;
+      //     count++;
+      //   }
+      // }
+
+      // function getValue1(root, index) {
+      //   function _getValue(node, count) {
+      //     if (!node) return null;
+      //     if (count === index) return node.value;
+      //     return _getValue(node.next, count + 1);
+      //   }
+      //   return _getValue(root, 0);
+      // }
+      // // console.log(getValue1(a, 5));
+
+      // /**
+      //  * 通过下标设置值
+      //  * @param {*} root
+      //  * @param {*} index
+      //  * @param {*} value
+      //  */
+      // function setValue(root, index, value) {
+      //   let count = 0;
+      //   while (root) {
+      //     if (count === index) return (root.value = value);
+      //     root = root.next;
+      //     count++;
+      //   }
+      // }
+
+      // function setValue1(root, index, value) {
+      //   function _setValue(node, count) {
+      //     if (!node) return;
+      //     if (count === index) return (node.value = value);
+      //     _setValue(node.next, count + 1);
+      //   }
+      //   _setValue(root, 0);
+      // }
+
+      // // setValue1(a, 3, "m");
+      // // forEach(a);
+
+      // /**
+      //  *
+      //  * @param {*} root
+      //  * @param {*} node
+      //  * @param {*} newNode
+      //  */
+      // function insetAfter(root, node, value) {
+      //   while (root) {
+      //     if (root.value === node.value) {
+      //       const newNode = new Node(value);
+      //       newNode.next = root.next;
+      //       root.next = newNode;
+      //       return;
+      //     }
+      //     root = root.next;
+      //   }
+      // }
+
+      // function insetAfter1(root, index, value) {
+      //   function _insetAfter1(_root, count) {
+      //     if (index === count) {
+      //       const newNode = new Node(value);
+      //       newNode.next = _root.next;
+      //       _root.next = newNode;
+      //       return;
+      //     }
+      //     _insetAfter1(_root.next, count + 1);
+      //   }
+      //   _insetAfter1(root, 0);
+      // }
+
+      // function insetAfter2(root, node, value) {
+      //   if (root.value === node.value) {
+      //     const newNode = new Node(value);
+      //     newNode.next = root.next;
+      //     root.next = newNode;
+      //     return;
+      //   }
+      //   insetAfter1(root.next, node, value);
+      // }
+      // // insetAfter1(a, 3, "m");
+      // // forEach(a);
+
+      // /**
+      //  *
+      //  * @param {*} root
+      //  */
+      // function push(root, value) {
+      //   if (!root.next) return (root.next = new Node(value));
+      //   push(root.next, value);
+      // }
+
+      // // push(a, "hs");
+      // // forEach(a);
+
+      // /**
+      //  *
+      //  * @param {*} root
+      //  * @param {*} index
+      //  */
+      // function _delete(root, index) {
+      //   if (index === 0) {
+      //     root.value = root.next.value;
+      //     root.next = root.next.next;
+      //     return;
+      //   }
+
+      //   function del(node, count) {
+      //     if (!node) return null;
+      //     if (count + 1 === index) {
+      //       node.next = node.next.next;
+      //       return;
+      //     }
+      //     del(node.next, count + 1);
+      //   }
+      //   del(root, 0);
+      // }
+
+      // // _delete(a, 0);
+      // // forEach(a);
+
+      // /**
+      //  *
+      //  * @param {*} root
+      //  */
+      // function reverse(root) {
+      //   if (!root.next.next) {
+      //     const temp = root.next;
+      //     root.next.next = root;
+      //     root.next = null;
+      //     return temp;
+      //   } else {
+      //     const newRoot = reverse(root.next);
+      //     root.next.next = root;
+      //     root.next = null;
+      //     return newRoot;
+      //   }
+      // }
+      // console.log(reverse(a));
+
+      /**
+       *
+       * @param {*} root
+       */
+      function isHaveCircle(root) {
+        if (!root) return false;
+        let low = root;
+        let fast = root.next;
+        while (fast && fast.next) {
+          if (fast.value === low.value) {
+            return true;
+          }
+          low = low.next;
+          fast = fast.next.next;
+        }
+        return false;
+      }
+      console.log(isHaveCircle(a));
+    </script>
+  </body>
+</html>

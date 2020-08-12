@@ -203,7 +203,7 @@ module.exports = {
 > >
 > >```js
 > >module.exports = env => {
-> >    return {}
+> >        return {}
 > >   }
 > >```
 > >
@@ -239,8 +239,8 @@ module.exports = {
    >>      stats: {} //控制命令行窗口的输出信息
    >>      proxy: {  //代理请求地址
    >>          '/api' : {
-   >>          target: 'https://xxx.xxx.com',
-   >>          changeOrigin: true /*将请求的请求头的host和origin也一并变为转发后的URL的host和origin*/
+   >>        	  target: 'https://xxx.xxx.com',
+   >>        	  changeOrigin: true /*将请求的请求头的host和origin也一并变为转发后的URL的host和origin*/
    >>                  }
    >> 		} 
    >>  }
@@ -253,14 +253,17 @@ module.exports = {
 6. #### url-loader: 将一个引入的文件转换，并导出一个base64格式的文件
 
 7.  #### 解决file-loader和url-loader遇到的路径问题：
+   
+   > ##### 因为loader在使用的时候并不知道html文件会在那个文件下生成，loader只会相对于dist目录导出一个一个路径eg："style/index.css"
+   
    > >```js
    > >module.exports = {
    > >        output: {
-   > >           publicPath: '/'   //一般配置成"/"，生成的js文件相当于，配置一个字符串给 __webpack_require__.p，一般的插件和loader会将这个字符串，写在路径的前面做拼接 
-   > >        }
+   > >           publicPath: '/'   //一般配置成"/"，生成的js文件相当于，配置一个字符串给 __webpack_require__.p，一般的插件和loader会将这个字符串，写在路径的前面做拼接  比如正常生成的文件路径为style/index.css 加上__webpack_require__.p = ”/a/“  变成/a/style/index.css
+> >        }
    > >}
    > >```
-
+   
 8. #### 常用webpack内置插件（`DefinePlugin`,`BannerPlugin`,`ProvidePlugin`）
 
    ##### 使用：
@@ -294,7 +297,7 @@ module.exports = {
 
     
 
-- #### BannerPlugin: 可以为每一个chunk生成的文件头部添加一行注释，一般用于添加公司，作者，版权等信息
+- ##### BannerPlugin: 可以为每一个chunk生成的文件头部添加一行注释，一般用于添加公司，作者，版权等信息
 
   ```js
   module.exports = {
@@ -310,7 +313,7 @@ module.exports = {
   }
   ```
 
-- ##### ProvidePlugin: 自动加载模块，而不必导出  `import` 和  `require`
+- ##### ProvidePlugin: 自动加载模块，而不必到处  `import` 和  `require`
 
   ```js
   module.exports = {

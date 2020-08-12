@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ## VUE——SSR（在服务端渲染，在客户端激活，传统vue的单页面应用是在客户端渲染）
+=======
+## VUE——SSR
+>>>>>>> 0a6171dd90e389d8d01ab9ff20359ec6b9992740
 
 ### 概念
 
@@ -17,15 +21,23 @@
 - #### 安装相关依赖
 
   ```shell
+<<<<<<< HEAD
   yarn add vue-server-renderer vue vue-router//两者版本要相同
   ```
 
 - #### 步骤——这种方法传到前端用户是不能交互的`methods上绑定的事件不能被触发`==(因为传到前端的是字符串)==，`router-link和router-view可以正常使用`
+=======
+  yarn add vue-server-renderer vue //两者版本要相同
+  ```
+
+- #### 步骤——这种方法传到前端用户是不能交互的`methods上绑定的事件不能被触发`==(因为传到前端的是字符串)==
+>>>>>>> 0a6171dd90e389d8d01ab9ff20359ec6b9992740
 
   ```jsx
   const Vue = require("vue");
   const { createRenderer } = require("vue-server-renderer");
   const express = require("express");
+<<<<<<< HEAD
   const Router = require("vue-router");
   Vue.use(Router);
   const app = express();
@@ -45,18 +57,31 @@
         },
       ],
     });
+=======
+  
+  const app = express();
+  const renderer = createRenderer();
+  
+  app.get("/", async (req, res) => {
+>>>>>>> 0a6171dd90e389d8d01ab9ff20359ec6b9992740
     const vm = new Vue({
       template: `
           <div>
               <b>{{message}}</b>
+<<<<<<< HEAD
               <router-link to="detail">detial</router-link>
               <router-view></router-view>
+=======
+>>>>>>> 0a6171dd90e389d8d01ab9ff20359ec6b9992740
           </div>
           `,
       data: {
         message: "I'm vue ssr",
       },
+<<<<<<< HEAD
       router,
+=======
+>>>>>>> 0a6171dd90e389d8d01ab9ff20359ec6b9992740
       methods: {
         click() {
           console.log("click");
@@ -64,7 +89,10 @@
       },
     });
     try {
+<<<<<<< HEAD
       router.push(req.url); //首屏页面渲染
+=======
+>>>>>>> 0a6171dd90e389d8d01ab9ff20359ec6b9992740
       const html = await renderer.renderToString(vm);
       res.send(html);
     } catch (error) {
@@ -87,6 +115,7 @@
 
 - ##### 不利于SEO
 
+<<<<<<< HEAD
 - ##### 首屏时间长
 
 
@@ -119,3 +148,6 @@ yarn add vue-server-renderer vue //两者版本要相同
 
 ```
 
+=======
+- ##### 首屏时间长
+>>>>>>> 0a6171dd90e389d8d01ab9ff20359ec6b9992740
