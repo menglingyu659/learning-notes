@@ -1,10 +1,18 @@
-## react
+# react
+
+
 
 ### antd
 
 - #### antd按需加载
 
 - #### antd主题配置
+
+
+
+---
+
+
 
 ### React组件化
 
@@ -16,6 +24,12 @@
 
 ##### [ant-design](https://ant.design/docs/react/use-with-create-react-app-cn)
 
+
+
+---
+
+
+
 #### 组件化优点
 
 - ##### 增加代码复用性，提高开发效率
@@ -26,23 +40,90 @@
 
 - ##### 要注意降低耦合性
 
-#### 组件跨层级通信——context
 
-- ##### class组件
+
+----
+
+
+
+### 组件跨层级通讯-Context
+
+组件之间可以将数据跨越多个层级进程传输，且可以不用props来传递。子组件指的是在一个组件中引入并应用某一个组件。
+
+
+
+举个例子，
+
+```jsx
+//错的写法：这种写法的Child是Father的子元素而不是子组件，Father可以称作是Index的子组件
+import Child form './Child'
+import Father from './Father'
+function Index() {
+    return <div>
+    	<Father>
+        	<Child></Child>
+        </Father>
+    </div>
+}
+//对的写法
+import Child from './Child'
+function Father() {
+    return <div>
+    	<Child></Child>
+    </div>
+}
+```
+
+
+
+---
+
+
+
+### Context API
+
+#### `React.createContext`
+
+#### `Context.Provider`
+
+#### `Class.contextType`
+
+#### `Context.Consumer`
+
+#### `UseContext`
+
+- #### class组件
 
   1. ##### 只能获取一个context：通过`static contextType = ThemeContext`获取context
 
   2. ##### 获取一个或多个context：Context.Consumer（）
 
-- ##### 函数组件
+- #### 函数组件
 
   1. ##### 获取一个或多个context：useContext(Context)
 
 ```jsx
 //Context.jsx
 import React, {Component} from 'react';
-export const ThemeContext = React.createContext();
-export const UserContext = React.createContext();
+export const ThemeContext = React.createContext({color:'red'});//默认值
+export const UserContext = React.createContext({name:'mly'});
+```
+
+```jsx
+import React from 'react'
+import {ThemeContext, UserContext} from './Context.jsx'
+import UseContextTypePage from './UseContextTypePage.jsx'
+function Index() {
+    const [theme, setTheme] = React.useState({color:'blue'})
+    const [user, setUser] = React.useState({name:'li'})
+    return <div>
+    	<ThemeContext.Provider value={theme}>
+            <UserContext.Provider value={user}>
+        		<UseContextTypePage></UseContextTypePage>
+            </UserContext.Provider>
+        </ThemeContext.Provider>
+    </div>
+}
 ```
 
 ```jsx
@@ -135,7 +216,11 @@ export default class UseContextPage extends Component {
 
 
 
-#### antd表单组件使用及实现
+---
+
+
+
+### antd表单组件使用及实现
 
 - ##### ==`antd3.x`的`form`表单局部变化会引起整体变化，`antd4.x`不会==
 
@@ -238,7 +323,13 @@ export default class AntdFormPage extends Component {
 
 ```
 
-##### `rc-fifield-form`表单组件的使用
+
+
+---
+
+
+
+### `rc-fifield-form`表单组件的使用
 
 - ##### `rc-fifield-form`：是reactd提供的第三方表单组件库
 
@@ -330,7 +421,13 @@ export default class AntdFormPage extends Component {
     ```
   
 
-#### 掌握ref
+
+
+---
+
+
+
+### 掌握ref
 
 #### HOC
 
@@ -342,7 +439,13 @@ export default class AntdFormPage extends Component {
 
   - ##### 不要再`render`方法中使用
 
-#### 弹窗组件实现
+
+
+---
+
+
+
+### 弹窗组件实现
 
 - ##### 传送门(`createPortal`)：react v16之后出现的portal可以实现内容传送功能。将组件加到指定中（如加入`<body></body>中`）
 
@@ -374,6 +477,12 @@ export default class AntdFormPage extends Component {
     }
   }
   ```
+
+
+
+---
+
+
 
 ### Redux
 
@@ -435,7 +544,13 @@ asyAdd = () => {
 };
 ```
 
-#### 实现redux
+
+
+---
+
+
+
+### 实现redux
 
 ```jsx
 export default function createStore(reducer, enhancer) {
@@ -467,7 +582,13 @@ export default function createStore(reducer, enhancer) {
 }
 ```
 
-#### 实现中间件 —— `applyMiddleware`
+
+
+---
+
+
+
+### 实现中间件 —— `applyMiddleware`
 
 ```jsx
 export function applyMiddleware(...middleWares) {
@@ -539,7 +660,13 @@ const reduxPromise = ({dispatch}) => {
 };
 ```
 
-#### `combineReducers`：聚合reducer
+
+
+---
+
+
+
+### `combineReducers`：聚合reducer
 
 ##### 使用
 
@@ -573,6 +700,12 @@ export function combineReducers(reducers = {}) {
   };
 }
 ```
+
+
+
+---
+
+
 
 ### `React-Redux`
 
@@ -648,7 +781,13 @@ export default connect(
 )(ReactReduxPage);
 ```
 
-#### `react-redux`相关的`hook API`
+
+
+---
+
+
+
+### `react-redux`相关的`hook API`
 
 ##### `useSelector`：获取store state
 
@@ -678,7 +817,13 @@ export default connect(
   }
   ```
 
-#### 实现`react-redux`
+
+
+---
+
+
+
+### 实现`react-redux`
 
 ##### API：
 
@@ -739,6 +884,12 @@ export const useDispatch = () => {
 };
 ```
 
+
+
+---
+
+
+
 ### Hooks API
 
 #### useReducer
@@ -785,6 +936,12 @@ export default function useReducerTest() {
 }
 ```
 
+
+
+---
+
+
+
 ### `React-Router`
 
 ### [react-router 这个英文文档很好](https://reacttraining.com/react-router/web/guides/quick-start)
@@ -818,7 +975,11 @@ yarn add react-router-dom
 
 
 
-#### **Route**渲染内容的三种⽅式
+---
+
+
+
+### **Route**渲染内容的三种⽅式
 
 - ##### Route渲染优先级：children>component>render。
 

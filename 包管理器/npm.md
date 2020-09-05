@@ -144,8 +144,11 @@ npm i --production
 ### 包的寻找
 
 ```js
-const _ require("lodash");
-//1.找node_modules目录下的package.json文件的main属性值，根据这个配置的入口来寻找入口文件。如果没有main属性则使用index.js作为入口文件
+const _ = require("lodash");
+//1.找node_modules当前目录下面的loadsh.js，若没有
+//2.找node_modules当前目录下的package.json文件的main属性值，根据这个配置的入口来寻找入口文件。如果没有main属性则使用index.js作为入口文件，若没有
+//3.返回上级目录重复1和2步骤的查找，直到找寻到顶级的全局node_modules目录，还没有就报错，
+//注意：顶级目录是指npm的顶级目录，不是工程的根目录
 
 const a = require('./a')
 //1.读取当前文件夹下面的a.js，若没有

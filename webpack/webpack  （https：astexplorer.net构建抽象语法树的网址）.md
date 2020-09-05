@@ -258,12 +258,16 @@ module.exports = {
    
    > >```js
    > >module.exports = {
-   > >        output: {
-   > >           publicPath: '/'   //一般配置成"/"，生成的js文件相当于，配置一个字符串给 __webpack_require__.p，一般的插件和loader会将这个字符串，写在路径的前面做拼接  比如正常生成的文件路径为style/index.css 加上__webpack_require__.p = ”/a/“  变成/a/style/index.css
-> >        }
-   > >}
+   > >   output: {
+   > >      publicPath: '/'   //一般配置成"/"，生成的js文件相当于，配置一个字符串给 __webpack_require__.p，一般的插件和loader会将这个字符串，写在路径的前面做拼接  比如正常生成的文件路径为style/index.css 加上__webpack_require__.p = ”/a/“  变成/a/style/index.css
    > >```
-   
+> >        }
+> >        }
+> >
+> >        ```
+> >        
+> >        ```
+
 8. #### 常用webpack内置插件（`DefinePlugin`,`BannerPlugin`,`ProvidePlugin`）
 
    ##### 使用：
