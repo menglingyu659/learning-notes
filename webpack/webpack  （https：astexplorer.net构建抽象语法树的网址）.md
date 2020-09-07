@@ -2,9 +2,9 @@
 
 #### 编译流程
 
-​	<img src="../操作系统/img/编译流程1.jpg" style="zoom:25%;" />
+​	<img src="./img/编译流程1.jpg" style="zoom:25%;" />
 
-​	<img src="../操作系统/img/编译流程2.jpg" style="zoom:25%;" />
+​	<img src="./img/编译流程2.jpg" style="zoom:25%;" />
 
 #### 路径方面的问题
 
@@ -254,20 +254,16 @@ module.exports = {
 
 7.  #### 解决file-loader和url-loader遇到的路径问题：
    
-   > ##### 因为loader在使用的时候并不知道html文件会在那个文件下生成，loader只会相对于dist目录导出一个一个路径eg："style/index.css"
+    > ##### 因为loader在使用的时候并不知道html文件会在那个文件下生成，loader只会相对于dist目录导出一个一个路径eg："style/index.css"
+    >
+    > ```js
+    > module.exports = {
+    >     output: {
+    >      publicPath: '/'   //一般配置成"/"，生成的js文件相当于，配置一个字符串给 __webpack_require__.p，一般的插件和loader会将这个字符串，写在路径的前面做拼接  比如正常生成的文件路径为style/index.css 加上__webpack_require__.p = ”/a/“  变成/a/style/index.css
+    >      }
+    > }
+    > ```
    
-   > >```js
-   > >module.exports = {
-   > >   output: {
-   > >      publicPath: '/'   //一般配置成"/"，生成的js文件相当于，配置一个字符串给 __webpack_require__.p，一般的插件和loader会将这个字符串，写在路径的前面做拼接  比如正常生成的文件路径为style/index.css 加上__webpack_require__.p = ”/a/“  变成/a/style/index.css
-   > >```
-> >        }
-> >        }
-> >
-> >        ```
-> >        
-> >        ```
-
 8. #### 常用webpack内置插件（`DefinePlugin`,`BannerPlugin`,`ProvidePlugin`）
 
    ##### 使用：
