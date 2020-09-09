@@ -329,7 +329,7 @@ export default class AntdFormPage extends Component {
 
 
 
-### `rc-fifield-form`表单组件的使用
+### `rc-field-form`表单组件的使用
 
 - ##### `rc-fifield-form`：是reactd提供的第三方表单组件库
 
@@ -437,7 +437,7 @@ export default class AntdFormPage extends Component {
 
 - ##### 高阶组件注意事项
 
-  - ##### 不要再`render`方法中使用
+  - ##### 不要再`render`方法中使用（因为每次都会重新创建这个组件，浪费性能）
 
 
 
@@ -659,6 +659,50 @@ const reduxPromise = ({dispatch}) => {
   };
 };
 ```
+
+
+
+---
+
+
+
+### 函数式编程
+
+函数式编程最基本的运算：**合成（compose）**和**柯里化（Currying）**
+
+
+
+#### 合成
+
+如果一个值需要经过多个函数才能变成另外一个值，就可以把所有的中间函数合成一个函数，这个就叫做函数的合成
+
+```js
+
+```
+
+
+
+#### 柯里化
+
+把接受多个**参数**的**函数**变成接受一个单一参数（最初函数的第一个函数）的函数，并且返回接受余下的参数而且返回结果的新函数的技术（==多参数变单参数==）
+
+```js
+function add(x) {
+  let sum = x;
+  const inner = (y) => {
+    if (y === undefined) {
+      return sum;
+    }
+    sum += y;
+    return inner;
+  };
+  return inner;
+}
+
+add(1)(2)(3)();
+```
+
+
 
 
 
