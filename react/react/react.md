@@ -1142,17 +1142,317 @@ export default function () {
 
 
 
+---
 
 
 
+### 使用
+
+**相关组件**
+
+- BrowserRouter
+- Switch
+- Route
+- Link
+
+**相关API**
+
+- withRouter
+
+**相关Hooks**
+
+- useHistory
+- useLocation
+- useParams
+- useRouteMatch
+
+```jsx
+import React from "react";
+// import {
+//   BrowserRouter as Router,
+//   Switch,
+//   Route,
+//   Link,
+//   useRouteMatch,
+//   useParams,
+//   useLocation,
+//   useHistory,
+//   withRouter,
+// } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useParams,
+  useLocation,
+  useHistory,
+  withRouter,
+} from "./component";
+
+function Home(props) {
+  console.log(props);
+  return <span>home</span>;
+}
+
+const HomeR = withRouter(function (props) {
+  // const history = useHistory();
+  // const location = useLocation();
+  // const match = useRouteMatch();
+  // const params = useParams();
+  // console.log(history);
+  // console.log(location);
+  // console.log(match);
+  // console.log(params);
+  console.log(props);
+  return <span>HomeR</span>;
+});
+
+function Detail(props) {
+  console.log(props);
+  return <span>detail</span>;
+}
+
+function Info(props) {
+  console.log(props);
+  return <span>info</span>;
+}
+
+function No(props) {
+  console.log(props);
+  return <div>404</div>;
+}
+
+function App() {
+  return (
+    <div>
+      <Router>
+        <p>
+          <Link to="/123">Home</Link>
+        </p>
+        <p>
+          <Link to="/detail">Detail</Link>
+        </p>
+        <p>
+          <Link to="/info">Info</Link>
+        </p>
+        <p>
+          <Link to="/none">none</Link>
+        </p>
+        <br />
+        <Switch>
+          <Route exact path="/:id" children={() => <HomeR a="a"></HomeR>} component={Home}></Route>
+          <Route path="/detail" component={Detail}></Route>
+          <Route path="/info" component={Info}></Route>
+          <Route component={No}></Route>
+        </Switch>
+      </Router>
+    </div>
+  );
+}
+
+export default App;
+```
 
 
 
+---
 
 
 
+### 实现
+
+git地址：[react-router-dom实现](https://github.com/menglingyu659/react-router)
+
+**相关组件**
+
+- BrowserRouter
+- Switch
+- Route
+- Link
+
+**相关API**
+
+- withRouter
+
+**相关Hooks**
+
+- useHistory
+- useLocation
+- useParams
+- useRouteMatch
+
+**index页面**
+
+```jsx
+export { BrowserRouter } from "./BrowserRouter";
+export { Link } from "./Link";
+export { Route } from "./Route";
+export { Switch } from "./Switch";
+export { useRouteMatch, useParams, useLocation, useHistory } from "./hooks";
+export { withRouter } from "./withRouter";
+```
 
 
+
+**BrowserRouter**
+
+```jsx
+//BrowserRouter.js
+import React from "react";
+import { createBrowserHistory } from "history";
+import Router from "./Router";
+
+export function BrowserRouter(props) {
+  const history = createBrowserHistory();
+  return <Router history={history} {...props}></Router>;
+}
+
+//Router.js
+import React, { useState } from "react";
+import { RouterContext } from "./context";
+
+export default function ({ history, children }) {
+  const [location, setLocation] = useState(history.location);
+  history.listen(({ location }) => {
+    setLocation(location);
+  });
+  const match = { path: "/", url: "/", params: {}, isExact: location.pathname === "/" };
+  return <RouterContext.Provider value={{ location, history, match }}>{children}</RouterContext.Provider>;
+}
+```
+
+
+
+**Link**
+
+```jsx
+import React, { useContext } from "react";
+import { RouterContext } from "./context";
+
+export function Link({ to, children }) {
+  const { history } = useContext(RouterContext);
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    history.push(to);
+  };
+  return (
+    <a href={to} onClick={handleClick}>
+      {children}
+    </a>
+  );
+}
+```
+
+
+
+**Route**
+
+```jsx
+import React, { useContext } from "react";
+import { RouterContext } from "./context";
+import { matchPath } from "react-router-dom";
+
+export function Route(props) {
+  const { path, component, children, render, computerMatch } = props;
+  const context = useContext(RouterContext);
+  const match = computerMatch
+    ? computerMatch
+    : path
+    ? matchPath(context.location.pathname, props)
+    : context.match;
+  props = {
+    ...context,
+    match,
+  };
+  return (
+    <RouterContext.Provider value={props}>
+      {match
+        ? children
+          ? typeof children === "function"
+            ? children(props)
+            : children
+          : component
+          ? React.createElement(component, props)
+          : render
+          ? render(props)
+          : null
+        : typeof children === "function"
+        ? children(props)
+        : null}
+    </RouterContext.Provider>
+  );
+}
+```
+
+
+
+**Switch**
+
+```jsx
+import React, { useContext } from "react";
+import { matchPath } from "react-router-dom";
+import { RouterContext } from "./context";
+
+export function Switch({ children }) {
+  const context = useContext(RouterContext);
+  let match, element;
+  React.Children.forEach(children, (ele) => {
+    if (element) return;
+    match = ele.props.path ? matchPath(context.location.pathname, ele.props) : context.match;
+    if (match) {
+      element = ele;
+    }
+  });
+
+  return match ? React.cloneElement(element, { computerMatch: match }) : null;
+}
+```
+
+
+
+**Hooks**
+
+```jsx
+import { useContext } from "react";
+import { RouterContext } from "./context";
+
+export const useRouteMatch = () => {
+  const context = useContext(RouterContext);
+  return context.match;
+};
+export const useParams = () => {
+  const match = useRouteMatch();
+  return match.params;
+};
+export const useLocation = () => {
+  const context = useContext(RouterContext);
+  return context.location;
+};
+export const useHistory = () => {
+  const context = useContext(RouterContext);
+  return context.history;
+};
+```
+
+
+
+**withRouter**
+
+```jsx
+import React, { useContext } from "react";
+import { RouterContext } from "./context";
+
+export const withRouter = (Component) => (props) => {
+  const context = useContext(RouterContext);
+  return React.createElement(Component, {
+    ...props,
+    ...context,
+  });
+};
+```
 
 
 
