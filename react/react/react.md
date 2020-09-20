@@ -1121,24 +1121,12 @@ export default function () {
 }
 ```
 
-##### API
-
-- Router一类的（==区别：基于的history不同==）
-  - BrowserRouter
-  - HashRouter
-  - MemoryRouter
 
 
-
-#### 原理
-
-##### 所要实现的API
-
+Router一类的（==区别：基于的history不同==）
 - BrowserRouter
-- Route
-- Link
-
-
+- HashRouter
+- MemoryRouter
 
 
 
