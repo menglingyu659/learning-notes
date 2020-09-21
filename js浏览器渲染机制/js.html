@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .transitioned {
+        transition: all 1s linear;
+      }
+
+      .change {
+        transform: translate(100px);
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <p>p</p>
+      <button>change</button>
+    </div>
+    <!-- <script>
+      const oBtn = document.getElementsByTagName("button")[0];
+      const oP = document.getElementsByTagName("p")[0];
+      oBtn.onclick = () => {
+        oP.classList.add("change");
+        oP.classList.add("transitioned");
+        oP.classList.remove("change");
+      };
+    </script> -->
+    <!-- <script>
+      const oBtn = document.getElementsByTagName("button")[0];
+      const oP = document.getElementsByTagName("p")[0];
+      oBtn.onclick = () => {
+        oP.classList.add("change");
+        document.body.offsetWidth;
+        oP.classList.add("transitioned");
+        oP.classList.remove("change");
+      };
+    </script> -->
+    <script>
+      const oBtn = document.getElementsByTagName("button")[0];
+      const oP = document.getElementsByTagName("p")[0];
+      oBtn.onclick = () => {
+        oP.classList.add("change");
+        setTimeout(() => {
+          oP.classList.add("transitioned");
+          oP.classList.remove("change");
+        });
+      };
+    </script>
+    <script>
+      const oBtn = document.getElementsByTagName("button")[0];
+      const oP = document.getElementsByTagName("p")[0];
+      oBtn.onclick = () => {
+        oP.classList.add("change");
+        Promise.resolve().then(() => {
+          oP.classList.add("transitioned");
+          document.body.offsetWidth;
+          oP.classList.remove("change");
+        });
+      };
+    </script>
+  </body>
+</html>
