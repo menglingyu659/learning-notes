@@ -988,7 +988,7 @@ export default function useReducerTest() {
 
 ### `React-Router`
 
-### [react-router 这个英文文档很好](https://reacttraining.com/react-router/web/guides/quick-start)
+### [react-router-dom 这个英文文档很好](https://reacttraining.com/react-router/web/guides/quick-start)
 
 #### 简介
 
@@ -1036,15 +1036,21 @@ yarn add react-router-dom
     >##### 只在当location匹配的时候渲染。
     >
     >```jsx
+    ><Router>
     >{/* 渲染component的时候会调⽤React.createElement，如果使⽤下⾯这种匿名函数的形式，每次都会⽣成⼀个新的匿名的函数，
     >导致⽣成的组件的type总是不相同，这个时候会产⽣重复的卸载和挂载 */}
     ><Route component={() => <TestComponent count= {count} />} />
     ><Route component={TestComponent} />
     >//内部大概原理
     >function Route(props) {
-    >    return <props.component></props.component>
+    >return <props.component></props.component>
     >}
     >```
+  ></Router>
+  >
+  >```
+  >
+  >```
   
   - >**render**：**func**
     >
@@ -1063,9 +1069,66 @@ yarn add react-router-dom
   
   - > **children**：**func**
     >
-    > ##### 有时候，不管location是否匹配，你都需要渲染⼀些内容，这时候你可以⽤children。除了不管location是否匹配都会被渲染之外，其它⼯作⽅法与render完全⼀样
+    > ##### 有时候，不管location是否匹配，你都需要渲染⼀些内容，这时候你可以⽤children。除了不管location是否匹配都会被渲染之外，其它⼯作⽅法与render完全⼀样（==页面上一直都会有children组件的内容，当children没有匹配到的时候，还想将其渲染出来，children必须作为function数据类型来传入==）
   
-    
+- ##### ==`<Route></Route>`没有path属性，所有路由都会匹配==
+
+
+
+---
+
+
+
+### Router原理以及使用
+
+[react-router-dom官方文档](http://react-router.docschina.org/)
+
+
+
+#### 使用Router
+
+##### 动态路由
+
+```jsx
+<Route path="/produc/:id"></Route>   //这个id可以是任意值，起到占位的作用
+```
+
+##### 嵌套路由
+
+```jsx
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
+
+function Detail() {
+    return <div>detail</div>
+}
+
+function Home(props) {
+    console.log(props.match.params.id) //123
+    return <div>
+    	<Link to="/detail"></Link>
+        <Route path="/detail" component={Detail}></Route>
+    </div>
+}
+
+
+export default function () {
+    return <div>
+        <Link to="/test/123"></Link>
+    	<Router>
+        	<Route path="/test/:id" component={Home}></Route>
+        </Router>
+    </div>
+}
+```
+
+
+
+Router一类的（==区别：基于的history不同==）
+- BrowserRouter
+- HashRouter
+- MemoryRouter
+
+
 
 ---
 
