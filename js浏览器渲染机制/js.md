@@ -83,15 +83,14 @@
 
 ==只有在发生重排之后，同时添加transitioned和change类名才能实现==，即使先添加transitioned这个类名也不行。
 
-以下写法均不可以，原因未知：
+以下写法不可以，原因：在重排代码（`document.body.offsetWidth`）之前加上`oP.classList.add("transitioned")`代码，会使元素以动画的形式运动，但小球刚要以动画形式运动又将change类名删除，导致没有任何现象，微任务的执行要快于GUI渲染线程的执行，所以也没有任何现象。
 
 ```js
   oBtn.onclick = () => {
     oP.classList.add("change");
     oP.classList.add("transitioned");
-    setTimeout(() => {
-      oP.classList.remove("change");
-    });
+    document.body.offsetWidth;
+    oP.classList.remove("change");
   };
   oBtn.onclick = () => {
     oP.classList.add("change");
